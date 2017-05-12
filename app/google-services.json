@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "604729076158",
+    "firebase_url": "https://transights-cccb4.firebaseio.com",
+    "project_id": "transights-cccb4",
+    "storage_bucket": "transights-cccb4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:604729076158:android:eb561b7983ecb9bc",
+        "android_client_info": {
+          "package_name": "com.softspec.transights.transights"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "604729076158-r6s22ddu7f4bf8ml1ohb86culcqegfkm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.softspec.transights.transights",
+            "certificate_hash": "03be8d40eb1d2bf3bf522bbd32374273dc9d92f0"
+          }
+        },
+        {
+          "client_id": "604729076158-kl612tk1cmleq145f8gd6vnu2n6aom6k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6sz3UTu3LEr6qub_cfhf5rc6SAKj9Wf4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "604729076158-kl612tk1cmleq145f8gd6vnu2n6aom6k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -8,7 +8,18 @@
     android:orientation="vertical"
     tools:context="com.softspec.transights.transights.MainActivity">
 
-    <FrameLayout
+    <Button
+        android:id="@+id/firebase_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Button" />
+
+    <ListView
+        android:id="@+id/place_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -24,7 +35,7 @@
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:text="@string/title_home" />
 
-    </FrameLayout>
+    </LinearLayout>
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
