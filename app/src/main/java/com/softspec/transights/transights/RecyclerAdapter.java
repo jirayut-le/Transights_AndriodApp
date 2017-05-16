@@ -22,6 +22,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     ArrayList<Place> placeList = new ArrayList<>();
     Context context;
 
+    MyViewHolder myViewHolder;
+
     public RecyclerAdapter(ArrayList<Place> placeList, Context context) {
         this.placeList = placeList;
         this.context = context;
@@ -30,7 +32,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.place_row, parent, false);
-        return new MyViewHolder(view, context, placeList);
+        myViewHolder = new MyViewHolder(view, context, placeList);
+        return myViewHolder;
     }
 
     @Override
@@ -68,12 +71,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
         public void setStationName(String stationName){
             this.stationName = (TextView) itemView.findViewById(R.id.place_station);
-            this.stationName.setText(stationName);
+            this.stationName.setText("@"+ stationName + " Station");
         }
 
         public void setImgsrc(String src){
             this.imgsrc = (ImageView) itemView.findViewById(R.id.place_img);
             Picasso.with(context).load(src).into(this.imgsrc);
+        }
+
+        public void changePlaceList(ArrayList<Place> arrayList){
+            this.places = new ArrayList<>();
+            this.places = arrayList;
         }
 
         @Override
@@ -91,9 +99,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     }
 
     public void setFilter(ArrayList<Place> arrayList){
-
         placeList = new ArrayList<>();
         placeList.addAll(arrayList);
+        myViewHolder.changePlaceList(placeList);
         notifyDataSetChanged();
     }
 }

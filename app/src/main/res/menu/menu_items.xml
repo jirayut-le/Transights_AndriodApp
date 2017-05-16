@@ -2,6 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
+    <item
+        android:id="@+id/action_location"
+        android:icon="@android:drawable/ic_menu_mylocation"
+        android:title="@string/app_name"
+        app:showAsAction="always"></item>
     <item
         android:id="@+id/action_search"
         android:title="@string/app_name"

@@ -11,6 +11,7 @@ import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.google.firebase.database.ChildEventListener;
@@ -18,6 +19,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 
 import java.util.ArrayList;
 
@@ -32,6 +35,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private RecyclerView mPlaceLists;
     private RecyclerAdapter recyclerAdapter;
     private MyFirebaseRecyclerAdapter firebaseRecyclerAdapter;
+
+    private MenuItem searchItem, locationItem;
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -108,14 +114,31 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             }
         });
 
+        mDatabase.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                return null;
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+                Log.d("loadDatabase", "load complete");
+            }
+        });
+
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.menu_items,menu);
-        MenuItem menuItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
+
+        searchItem = menu.findItem(R.id.action_search);
+        locationItem = menu.findItem(R.id.action_location);
+
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(this);
+
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -126,7 +149,18 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 //        Query newDatabase =  mDatabase.orderByChild("placeName").startAt(query).endAt(query.toLowerCase());
 //        setmPlaceListByFilter(newDatabase);
 
-        return false;
+        query = query.toLowerCase();
+        ArrayList<Place> newList = new ArrayList<>();
+        for(Place place : mPlace){
+            String placeName = place.getPlaceName().toLowerCase();
+            String stationName = place.getStationName().toLowerCase();
+            if(placeName.contains(query) || stationName.contains(query)){
+                newList.add(place);
+            }
+        }
+
+        recyclerAdapter.setFilter(newList);
+        return true;
     }
 
     @Override
