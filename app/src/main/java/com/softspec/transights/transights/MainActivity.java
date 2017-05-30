@@ -1,7 +1,6 @@
 package com.softspec.transights.transights;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +10,6 @@ import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 
 import com.google.firebase.database.ChildEventListener;
@@ -34,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     private RecyclerView mPlaceLists;
     private RecyclerAdapter recyclerAdapter;
-    private MyFirebaseRecyclerAdapter firebaseRecyclerAdapter;
+//    private MyFirebaseRecyclerAdapter firebaseRecyclerAdapter;
 
     private MenuItem searchItem, locationItem;
 
@@ -43,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
         @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        public boolean onNavigationItemSelected(MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     mTextMessage.setText(R.string.title_home);
@@ -140,6 +138,53 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         searchView.setOnQueryTextListener(this);
 
 
+//        searchView.setOnClickListener(new SearchView.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Log.d("search view : ", "open");
+//            }
+//        });
+//
+//        searchView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Log.d("view : ", "open");
+//            }
+//        });
+//
+//        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+//            @Override
+//            public boolean onClose() {
+//                Log.d("search view : ", "close");
+//                return true;
+//            }
+//        });
+
+
+//        searchItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem menuItem) {
+//                Log.d("menu item : ", "open");
+//                locationItem.setVisible(false);
+//                return true;
+//            }
+//        });
+
+//        MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
+//            @Override
+//            public boolean onMenuItemActionExpand(MenuItem item) {
+//                locationItem.setVisible(false);
+//                return true;
+//            }
+//
+//            @Override
+//            public boolean onMenuItemActionCollapse(MenuItem item) {
+//                locationItem.setVisible(true);
+//                searchItem.setVisible(true);
+//                return true;
+//            }
+//        });
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -148,27 +193,17 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 //        query = query.toLowerCase();
 //        Query newDatabase =  mDatabase.orderByChild("placeName").startAt(query).endAt(query.toLowerCase());
 //        setmPlaceListByFilter(newDatabase);
-
-        query = query.toLowerCase();
-        ArrayList<Place> newList = new ArrayList<>();
-        for(Place place : mPlace){
-            String placeName = place.getPlaceName().toLowerCase();
-            String stationName = place.getStationName().toLowerCase();
-            if(placeName.contains(query) || stationName.contains(query)){
-                newList.add(place);
-            }
-        }
-
-        recyclerAdapter.setFilter(newList);
+        search(query);
         return true;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
-//        newText = newText.toLowerCase();
-//        Query newDatabase =  mDatabase.orderByChild("placeName").startAt(newText).endAt(newText+"\uf8ff");
-//        setmPlaceListByFilter(newDatabase);
+        search(newText);
+        return true;
+    }
 
+    public void search(String newText){
         newText = newText.toLowerCase();
         ArrayList<Place> newList = new ArrayList<>();
         for(Place place : mPlace){
@@ -178,11 +213,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 newList.add(place);
             }
         }
-
         recyclerAdapter.setFilter(newList);
-
-        return true;
+        mPlaceLists.setAdapter(recyclerAdapter);
     }
-
-
 }
