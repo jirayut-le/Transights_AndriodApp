@@ -36,7 +36,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.place_row, parent, false);
-        myViewHolder = new MyViewHolder(view, context, placeList);
+        myViewHolder = new MyViewHolder(view, context, placeList, stationList);
         return myViewHolder;
     }
 
@@ -68,13 +68,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         TextView placeName, stationName;
         ImageView imgsrc;
         ArrayList<Place> places;
-//        ArrayList<Station> stationList;
+        ArrayList<Station> stationList;
         Context context;
 
-        public MyViewHolder(View itemView, Context context, ArrayList<Place> places) {
+        public MyViewHolder(View itemView, Context context, ArrayList<Place> places, ArrayList<Station> stations) {
             super(itemView);
             this.places = places;
-//            this.stationList = stationList;
+            this.stationList = stations;
             this.context = context;
             itemView.setOnClickListener(this);
         }
@@ -94,21 +94,27 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             Picasso.with(context).load(src).into(this.imgsrc);
         }
 
-        public void changePlaceList(ArrayList<Place> arrayList){
-//            this.places = new ArrayList<>();
-//            this.places = arrayList;
+        private String getStationName(String placeName){
+            for(Station s : stationList){
+                for(Place p : s.getPlaceList()){
+                    if(p.getPlaceName().equalsIgnoreCase(placeName))
+                        return s.getStationName();
+                }
+            }
+            return null;
         }
 
         @Override
         public void onClick(View view) {
-//            int pos = getAdapterPosition();
-//            Place place = this.places.get(pos);
-//            Intent intent = new Intent(this.context, PlaceDetail.class);
-//            intent.putExtra("placeName", place.getPlaceName());
-//            intent.putExtra("stationName", place.getStationName());
-//            intent.putExtra("imgsrc", place.getImgSrc());
+            int pos = getAdapterPosition();
+            Place place = this.places.get(pos);
+            Intent intent = new Intent(this.context, PlaceDetail.class);
+            intent.putExtra("placeName", place.getPlaceName());
+            intent.putExtra("stationName", getStationName(place.getPlaceName()));
+            intent.putExtra("description", place.getDescription());
+            intent.putExtra("imgsrc", place.getImgSrc());
 
-//            this.context.startActivity(intent);
+            this.context.startActivity(intent);
 
         }
     }

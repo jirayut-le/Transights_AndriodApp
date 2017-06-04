@@ -20,6 +20,7 @@
         android:paddingLeft="30px"
         android:paddingTop="20px"
         android:text="Place Name"
+        android:textColor="#3e3e3e"
         android:textSize="30sp"
         android:textStyle="bold" />
 
@@ -33,10 +34,11 @@
         android:textSize="18sp" />
 
     <TextView
+        android:id="@+id/place_detail_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="30px"
         android:text="Description"
-        android:textSize="20sp"/>
+        android:textSize="20sp" />
 
 </LinearLayout>
