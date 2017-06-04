@@ -22,8 +22,6 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener{
 
-    private TextView mTextMessage;
-
     private DatabaseReference mDatabase;
 
     private ArrayList<Place> mPlace = new ArrayList<>();
@@ -32,7 +30,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     private RecyclerView mPlaceLists;
     private RecyclerAdapter recyclerAdapter;
-//    private MyFirebaseRecyclerAdapter firebaseRecyclerAdapter;
 
     private MenuItem searchItem, locationItem;
 
@@ -44,13 +41,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         public boolean onNavigationItemSelected(MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
+
                     return true;
                 case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
-                    return true;
-                case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_notifications);
+
                     return true;
             }
             return false;
@@ -76,6 +70,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         recyclerAdapter = new RecyclerAdapter(mPlace, stationList, this);
         mPlaceLists.setAdapter(recyclerAdapter);
 
+        addChildStation();
+        addChildPlace();
+
+    }
+
+    private void addChildStation(){
         mDatabase = FirebaseDatabase.getInstance().getReference().child("station");
         mDatabase.addChildEventListener(new ChildEventListener() {
             @Override
@@ -104,6 +104,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
             }
         });
+    }
+
+    private void addChildPlace(){
         mDatabase = FirebaseDatabase.getInstance().getReference().child("places");
         mDatabase.addChildEventListener(new ChildEventListener() {
             @Override
