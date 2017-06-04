@@ -99,17 +99,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         mPlaceLists.setAdapter(recyclerAdapter);
     }
 
-    public void search(String newText){
-//        newText = newText.toLowerCase();
-//        ArrayList<Place> newList = new ArrayList<>();
-//        for(Place place : mPlace){
-//            String placeName = place.getPlaceName().toLowerCase();
-//            String stationName = place.getStationName().toLowerCase();
-//            if(placeName.contains(newText) || stationName.contains(newText)){
-//                newList.add(place);
-//            }
-//        }
-//        recyclerAdapter.setFilter(newList);
-//        mPlaceLists.setAdapter(recyclerAdapter);
+    public void search(String keyword){
+        transightsPresenter.search(keyword);
     }
 }

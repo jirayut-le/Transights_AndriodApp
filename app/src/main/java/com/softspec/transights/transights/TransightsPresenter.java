@@ -24,14 +24,20 @@ public class TransightsPresenter implements Observer {
         remoteDataRepository.fetchAllStation();
     }
 
+    public void search(String keyword){
+        remoteDataRepository.search(keyword);
+    }
+
     @Override
     public void update(Observable observable, Object o) {
-        String tmp = (String)o;
-        if(tmp.equalsIgnoreCase("station"))
-            remoteDataRepository.fetchAllPlace();
-        else if (tmp.equalsIgnoreCase("place"))
-            remoteDataRepository.fetchAllPriceAndTime();
-        else if (tmp.equalsIgnoreCase("finish"))
+        if(o != null) {
+            String tmp = (String) o;
+            if (tmp.equalsIgnoreCase("station"))
+                remoteDataRepository.fetchAllPlace();
+            else if (tmp.equalsIgnoreCase("place"))
+                remoteDataRepository.fetchAllPriceAndTime();
+        }
+        else
             mainActivity.setPlaceList(remoteDataRepository.getPlaceList(), remoteDataRepository.getStationList());
     }
 }

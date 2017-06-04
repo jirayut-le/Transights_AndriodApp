@@ -112,11 +112,4 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
         }
     }
-
-    public void setFilter(ArrayList<Place> arrayList){
-//        placeList = new ArrayList<>();
-//        placeList.addAll(arrayList);
-//        myViewHolder.changePlaceList(placeList);
-        notifyDataSetChanged();
-    }
 }

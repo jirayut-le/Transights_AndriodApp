@@ -20,6 +20,8 @@ public class RemoteDataRepository extends Observable {
     private ArrayList<Place> placeList;
     private ArrayList<Station> stationList;
 
+    private ArrayList<Place> result;
+
     private DatabaseReference mDatabase;
 
     private static RemoteDataRepository remoteDataRepository;
@@ -27,6 +29,7 @@ public class RemoteDataRepository extends Observable {
     private RemoteDataRepository(){
         placeList = new ArrayList<>();
         stationList = new ArrayList<>();
+        result = new ArrayList<>();
     }
 
     public static RemoteDataRepository getInstance(){
@@ -34,6 +37,21 @@ public class RemoteDataRepository extends Observable {
             remoteDataRepository = new RemoteDataRepository();
         return remoteDataRepository;
     }
+
+    public void search(String keyword){
+        keyword = keyword.toLowerCase();
+        result.clear();
+        for(Station s : stationList){
+            for(Place p : s.getPlaceList()){
+                if(s.getStationName().toLowerCase().contains(keyword) || p.getPlaceName().toLowerCase().contains(keyword)){
+                    result.add(p);
+                }
+            }
+        }
+        setChanged();
+        notifyObservers();
+    }
+
 
     public void fetchAllStation(){
         mDatabase = FirebaseDatabase.getInstance().getReference().child("station");
@@ -147,6 +165,7 @@ public class RemoteDataRepository extends Observable {
         Place p = new Place(placeID, placeName, description, imgSrc);
 
         placeList.add(p);
+        result.add(p);
 
         for(Station s : stationList)
             if(s.getStationName().equalsIgnoreCase(stationName))
@@ -173,12 +192,12 @@ public class RemoteDataRepository extends Observable {
 
         if(deptStation.equalsIgnoreCase("bearing") && arrtStation.equalsIgnoreCase("bearing")){
             setChanged();
-            notifyObservers("finish");
+            notifyObservers();
         }
     }
 
     public ArrayList<Place> getPlaceList() {
-        return placeList;
+        return result;
     }
 
     public ArrayList<Station> getStationList() {
