@@ -43,12 +43,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
-        holder.setPlaceName(placeList.get(position).getPlaceName());
+        String placeName = placeList.get(position).getPlaceName();
+
+        holder.setPlaceName(placeName);
         holder.setImgsrc(placeList.get(position).getImgSrc());
         String stationName  = "";
         for(Station s : stationList){
             for(Place p : s.getPlaceList()){
-                if(p.getPlaceName().equalsIgnoreCase(placeList.get(position).getPlaceName())) {
+                if(p.getPlaceName().equalsIgnoreCase(placeName)) {
                     stationName = s.getStationName();
                     break;
                 }
@@ -95,9 +97,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         }
 
         private String getStationName(String placeName){
-            for(Station s : stationList){
-                for(Place p : s.getPlaceList()){
-                    if(p.getPlaceName().equalsIgnoreCase(placeName))
+            for(Station s : stationList) {
+                for (Place p : s.getPlaceList()) {
+                    if (p.getPlaceName().equalsIgnoreCase(placeName))
                         return s.getStationName();
                 }
             }
