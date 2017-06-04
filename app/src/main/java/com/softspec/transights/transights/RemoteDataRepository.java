@@ -52,6 +52,16 @@ public class RemoteDataRepository extends Observable {
         notifyObservers();
     }
 
+    public void selectStation(String station){
+        result.clear();
+        for(Station s : stationList){
+            if(s.getStationName().equalsIgnoreCase(station))
+                result.addAll(s.getPlaceList());
+        }
+        setChanged();
+        notifyObservers();
+    }
+
 
     public void fetchAllStation(){
         mDatabase = FirebaseDatabase.getInstance().getReference().child("station");

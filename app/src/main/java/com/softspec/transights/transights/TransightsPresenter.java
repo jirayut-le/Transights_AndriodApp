@@ -28,6 +28,10 @@ public class TransightsPresenter implements Observer {
         remoteDataRepository.search(keyword);
     }
 
+    public void selectStation(String station){
+        remoteDataRepository.selectStation(station);
+    }
+
     @Override
     public void update(Observable observable, Object o) {
         if(o != null) {
