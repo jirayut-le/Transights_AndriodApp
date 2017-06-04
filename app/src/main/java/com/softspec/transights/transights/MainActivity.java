@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         home = new Home();
         estimate = new Estimate();
+        loadFirebase();
 
         sectionPagerAdapter = new SectionPagerAdapter(getSupportFragmentManager());
         setupViewPager();
@@ -47,7 +48,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         setUpTabLayout();
 
-        loadFirebase();
     }
 
     public void setupViewPager(){
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     public void loadFirebase(){
         remoteDataRepository = RemoteDataRepository.getInstance();
-        transightsPresenter = new TransightsPresenter(remoteDataRepository, home);
+        transightsPresenter = new TransightsPresenter(remoteDataRepository, home, estimate);
         transightsPresenter.initialize();
     }
 

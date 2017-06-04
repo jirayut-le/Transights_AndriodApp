@@ -1,7 +1,5 @@
 package com.softspec.transights.transights;
 
-import android.util.Log;
-
 import java.util.Observable;
 import java.util.Observer;
 
@@ -13,10 +11,12 @@ public class TransightsPresenter implements Observer {
 
     private RemoteDataRepository remoteDataRepository;
     private Home home;
+    private Estimate estimate;
 
-    public TransightsPresenter(RemoteDataRepository remoteDataRepository,Home home){
+    public TransightsPresenter(RemoteDataRepository remoteDataRepository, Home home, Estimate estimate){
         this.remoteDataRepository = remoteDataRepository;
         this.home = home;
+        this.estimate = estimate;
     }
 
     public void initialize(){
@@ -44,8 +44,9 @@ public class TransightsPresenter implements Observer {
                 remoteDataRepository.fetchAllPlace();
             else if (tmp.equalsIgnoreCase("place"))
                 remoteDataRepository.fetchAllPriceAndTime();
-        }
-        else
+        } else {
             home.setPlaceList(remoteDataRepository.getPlaceList(), remoteDataRepository.getStationList());
+            estimate.setupSpinner(remoteDataRepository.getStationList());
+        }
     }
 }

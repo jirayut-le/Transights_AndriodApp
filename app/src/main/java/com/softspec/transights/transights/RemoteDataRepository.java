@@ -206,6 +206,7 @@ public class RemoteDataRepository extends Observable {
 
         if(deptStation.equalsIgnoreCase("bearing") && arrtStation.equalsIgnoreCase("bearing"))
             notifyDataChange();
+
     }
 
     public ArrayList<Place> getPlaceList() {
