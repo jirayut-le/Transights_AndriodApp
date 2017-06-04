@@ -1,8 +1,7 @@
 <resources>
     <string name="app_name">Transights</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Estimate</string>
-    <string name="title_notifications">Account</string>
+    <string name="title_estimate">Estimate</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

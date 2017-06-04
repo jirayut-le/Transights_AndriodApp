@@ -12,11 +12,11 @@ import java.util.Observer;
 public class TransightsPresenter implements Observer {
 
     private RemoteDataRepository remoteDataRepository;
-    private MainActivity mainActivity;
+    private Home home;
 
-    public TransightsPresenter(RemoteDataRepository remoteDataRepository, MainActivity mainActivity){
+    public TransightsPresenter(RemoteDataRepository remoteDataRepository,Home home){
         this.remoteDataRepository = remoteDataRepository;
-        this.mainActivity = mainActivity;
+        this.home = home;
     }
 
     public void initialize(){
@@ -32,6 +32,10 @@ public class TransightsPresenter implements Observer {
         remoteDataRepository.selectStation(station);
     }
 
+    public void showAll(){
+        remoteDataRepository.showAll();
+    }
+
     @Override
     public void update(Observable observable, Object o) {
         if(o != null) {
@@ -42,6 +46,6 @@ public class TransightsPresenter implements Observer {
                 remoteDataRepository.fetchAllPriceAndTime();
         }
         else
-            mainActivity.setPlaceList(remoteDataRepository.getPlaceList(), remoteDataRepository.getStationList());
+            home.setPlaceList(remoteDataRepository.getPlaceList(), remoteDataRepository.getStationList());
     }
 }

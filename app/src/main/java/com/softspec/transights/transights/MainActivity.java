@@ -2,11 +2,10 @@ package com.softspec.transights.transights;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,13 +20,17 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener{
 
-
-    private RecyclerView mPlaceLists;
-    private RecyclerAdapter recyclerAdapter;
     private MenuItem searchItem;
 
     private TransightsPresenter transightsPresenter;
     private RemoteDataRepository remoteDataRepository;
+
+    private SectionPagerAdapter sectionPagerAdapter;
+    private ViewPager viewPager;
+    private TabLayout tabLayout;
+
+    private Home home;
+    private Estimate estimate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,41 +38,38 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-//        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        home = new Home();
+        estimate = new Estimate();
 
-        initRecycleView();
+        sectionPagerAdapter = new SectionPagerAdapter(getSupportFragmentManager());
+        setupViewPager();
+
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        setUpTabLayout();
+
+        loadFirebase();
     }
 
-    public void initRecycleView(){
+    public void setupViewPager(){
+        viewPager = (ViewPager) findViewById(R.id.container);
+        sectionPagerAdapter.addFragment(home);
+        sectionPagerAdapter.addFragment(estimate);
+        viewPager.setAdapter(sectionPagerAdapter);
+    }
 
-        mPlaceLists = (RecyclerView) findViewById(R.id.place_recycleView);
-        mPlaceLists.setHasFixedSize(true);
-        mPlaceLists.setLayoutManager(new LinearLayoutManager(this));
+    public void setUpTabLayout(){
+        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_home_black_24dp);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_access_time_black_24dp);
+        tabLayout.getTabAt(0).setText("Home");
+        tabLayout.getTabAt(1).setText("Estimate");
+    }
 
+    public void loadFirebase(){
         remoteDataRepository = RemoteDataRepository.getInstance();
-        transightsPresenter = new TransightsPresenter(remoteDataRepository, this);
+        transightsPresenter = new TransightsPresenter(remoteDataRepository, home);
         transightsPresenter.initialize();
     }
-
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-
-                    return true;
-                case R.id.navigation_dashboard:
-
-                    return true;
-            }
-            return false;
-        }
-
-    };
-
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
@@ -115,6 +115,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         transightsPresenter.selectStation(station);
     }
 
+    public void showAll(){
+        transightsPresenter.showAll();
+    }
+
     public void openDialogSelectLocation(){
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Select station");
@@ -126,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         final Spinner stationSpinner = (Spinner) viewInflated.findViewById(R.id.station_select);
 
         List<String> list = new ArrayList<>();
-        list.add("Select the station");
+        list.add("Show All");
         for(Station s : remoteDataRepository.getStationList())
             list.add(s.getStationName());
 
@@ -139,20 +143,15 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void onClick(View view) {
                 String select = stationSpinner.getSelectedItem().toString();
-                if(!select.equalsIgnoreCase("Select the station")){
+                if(!select.equalsIgnoreCase("Show All")){
                     selectStation(select);
                     Toast.makeText(MainActivity.this, "Go to " + select + " station.", Toast.LENGTH_SHORT).show();
-                    alertDialog.dismiss();
                 } else
-                    Toast.makeText(MainActivity.this, "Please select the station!", Toast.LENGTH_SHORT).show();
+                    showAll();
+                alertDialog.dismiss();
             }
         });
 
         alertDialog.show();
-    }
-
-    public void setPlaceList(ArrayList<Place> placeList, ArrayList<Station> stationList){
-        recyclerAdapter = new RecyclerAdapter(placeList, stationList, this);
-        mPlaceLists.setAdapter(recyclerAdapter);
     }
 }

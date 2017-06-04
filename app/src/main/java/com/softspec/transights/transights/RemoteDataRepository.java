@@ -1,7 +1,5 @@
 package com.softspec.transights.transights;
 
-import android.util.Log;
-
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -41,27 +39,33 @@ public class RemoteDataRepository extends Observable {
     public void search(String keyword){
         keyword = keyword.toLowerCase();
         result.clear();
-        for(Station s : stationList){
-            for(Place p : s.getPlaceList()){
-                if(s.getStationName().toLowerCase().contains(keyword) || p.getPlaceName().toLowerCase().contains(keyword)){
+        for(Station s : stationList)
+            for(Place p : s.getPlaceList())
+                if(s.getStationName().toLowerCase().contains(keyword) || p.getPlaceName().toLowerCase().contains(keyword))
                     result.add(p);
-                }
-            }
-        }
-        setChanged();
-        notifyObservers();
+
+        notifyDataChange();
     }
 
     public void selectStation(String station){
         result.clear();
-        for(Station s : stationList){
+        for(Station s : stationList)
             if(s.getStationName().equalsIgnoreCase(station))
                 result.addAll(s.getPlaceList());
-        }
+
+        notifyDataChange();
+    }
+
+    public void showAll(){
+        result.clear();
+        result.addAll(placeList);
+        notifyDataChange();
+    }
+
+    private void notifyDataChange(){
         setChanged();
         notifyObservers();
     }
-
 
     public void fetchAllStation(){
         mDatabase = FirebaseDatabase.getInstance().getReference().child("station");
@@ -200,10 +204,8 @@ public class RemoteDataRepository extends Observable {
             }
         }
 
-        if(deptStation.equalsIgnoreCase("bearing") && arrtStation.equalsIgnoreCase("bearing")){
-            setChanged();
-            notifyObservers();
-        }
+        if(deptStation.equalsIgnoreCase("bearing") && arrtStation.equalsIgnoreCase("bearing"))
+            notifyDataChange();
     }
 
     public ArrayList<Place> getPlaceList() {
