@@ -5,24 +5,16 @@ package com.softspec.transights.transights;
  */
 
 public class Place {
-    private String placeID, placeName, stationName, imgSrc;
-    private int avgRate;
-
+    private String placeID, placeName, description, imgSrc;
 
     public Place(){
 
     }
-    public Place(String placeID, String placeName, String stationName, String imgSrc){
+    public Place(String placeID, String placeName,String description, String imgSrc){
         this.placeID = placeID;
         this.placeName = placeName;
-        this.stationName = stationName;
+        this.description = description;
         this.imgSrc = imgSrc;
-        this.avgRate = avgRate;
-    }
-
-    @Override
-    public String toString() {
-        return placeName  + " @" + stationName;
     }
 
     public String getPlaceID() {
@@ -41,12 +33,12 @@ public class Place {
         this.placeName = placeName;
     }
 
-    public String getStationName() {
-        return stationName;
+    public String getDescription() {
+        return description;
     }
 
-    public void setStationName(String stationName) {
-        this.stationName = stationName;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getImgSrc() {
@@ -57,11 +49,4 @@ public class Place {
         this.imgSrc = imgSrc;
     }
 
-    public int getAvgRate() {
-        return avgRate;
-    }
-
-    public void setAvgRate(int avgRate) {
-        this.avgRate = avgRate;
-    }
 }

@@ -3,6 +3,7 @@ package com.softspec.transights.transights;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,12 +21,15 @@ import java.util.ArrayList;
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>{
 
     ArrayList<Place> placeList = new ArrayList<>();
+
+    ArrayList<Station> stationList = new ArrayList<>();
     Context context;
 
     MyViewHolder myViewHolder;
 
-    public RecyclerAdapter(ArrayList<Place> placeList, Context context) {
+    public RecyclerAdapter(ArrayList<Place> placeList,ArrayList<Station> stations, Context context) {
         this.placeList = placeList;
+        this.stationList = stations;
         this.context = context;
     }
     @Override
@@ -40,8 +44,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
         holder.setPlaceName(placeList.get(position).getPlaceName());
-        holder.setStationName(placeList.get(position).getStationName());
         holder.setImgsrc(placeList.get(position).getImgSrc());
+        String stationName  = "";
+        for(Station s : stationList){
+            for(Place p : s.getPlaceList()){
+                if(p.getPlaceName().equalsIgnoreCase(placeList.get(position).getPlaceName())) {
+                    stationName = s.getStationName();
+                    break;
+                }
+            }
+        }
+        holder.setStationName(stationName);
 
     }
 
@@ -55,11 +68,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         TextView placeName, stationName;
         ImageView imgsrc;
         ArrayList<Place> places;
+//        ArrayList<Station> stationList;
         Context context;
 
         public MyViewHolder(View itemView, Context context, ArrayList<Place> places) {
             super(itemView);
             this.places = places;
+//            this.stationList = stationList;
             this.context = context;
             itemView.setOnClickListener(this);
         }
@@ -80,28 +95,28 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         }
 
         public void changePlaceList(ArrayList<Place> arrayList){
-            this.places = new ArrayList<>();
-            this.places = arrayList;
+//            this.places = new ArrayList<>();
+//            this.places = arrayList;
         }
 
         @Override
         public void onClick(View view) {
-            int pos = getAdapterPosition();
-            Place place = this.places.get(pos);
-            Intent intent = new Intent(this.context, PlaceDetail.class);
-            intent.putExtra("placeName", place.getPlaceName());
-            intent.putExtra("stationName", place.getStationName());
-            intent.putExtra("imgsrc", place.getImgSrc());
+//            int pos = getAdapterPosition();
+//            Place place = this.places.get(pos);
+//            Intent intent = new Intent(this.context, PlaceDetail.class);
+//            intent.putExtra("placeName", place.getPlaceName());
+//            intent.putExtra("stationName", place.getStationName());
+//            intent.putExtra("imgsrc", place.getImgSrc());
 
-            this.context.startActivity(intent);
+//            this.context.startActivity(intent);
 
         }
     }
 
     public void setFilter(ArrayList<Place> arrayList){
-        placeList = new ArrayList<>();
-        placeList.addAll(arrayList);
-        myViewHolder.changePlaceList(placeList);
+//        placeList = new ArrayList<>();
+//        placeList.addAll(arrayList);
+//        myViewHolder.changePlaceList(placeList);
         notifyDataSetChanged();
     }
 }

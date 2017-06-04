@@ -17,8 +17,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.MutableData;
-import com.google.firebase.database.Transaction;
 
 import java.util.ArrayList;
 
@@ -29,6 +27,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private DatabaseReference mDatabase;
 
     private ArrayList<Place> mPlace = new ArrayList<>();
+
+    private ArrayList<Station> stationList  = new ArrayList<>();
 
     private RecyclerView mPlaceLists;
     private RecyclerAdapter recyclerAdapter;
@@ -69,25 +69,18 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 //        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
 //        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("places");
-
-
         mPlaceLists = (RecyclerView) findViewById(R.id.place_recycleView);
         mPlaceLists.setHasFixedSize(true);
         mPlaceLists.setLayoutManager(new LinearLayoutManager(this));
 
-
-        recyclerAdapter = new RecyclerAdapter(mPlace, this);
+        recyclerAdapter = new RecyclerAdapter(mPlace, stationList, this);
         mPlaceLists.setAdapter(recyclerAdapter);
 
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("station");
         mDatabase.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                String placeID = dataSnapshot.child("palceID").getValue(String.class);
-                String placeName = dataSnapshot.child("PlaceName").getValue(String.class);
-                String stationName = dataSnapshot.child("stationName").getValue(String.class);
-                String imgSrc = dataSnapshot.child("imgsrc").getValue(String.class);
-                mPlace.add(new Place(placeID, placeName, stationName, imgSrc));
+                loadStation(dataSnapshot);
                 recyclerAdapter.notifyDataSetChanged();
             }
 
@@ -111,20 +104,59 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
             }
         });
-
-        mDatabase.runTransaction(new Transaction.Handler() {
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("places");
+        mDatabase.addChildEventListener(new ChildEventListener() {
             @Override
-            public Transaction.Result doTransaction(MutableData mutableData) {
-                return null;
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                loadPlace(dataSnapshot);
+                recyclerAdapter.notifyDataSetChanged();
             }
 
             @Override
-            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
-                Log.d("loadDatabase", "load complete");
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
+    }
 
+    private void loadStation(DataSnapshot dataSnapshot){
+        String stationName = dataSnapshot.child("stationName").getValue(String.class);
+        stationList.add(new Station(dataSnapshot.child("stationName").getValue(String.class), 0, 0));
+    }
+
+    private void loadPlace(DataSnapshot dataSnapshot){
+        String stationName = dataSnapshot.child("stationName").getValue(String.class);
+        String placeID = dataSnapshot.child("placeID").getValue(String.class);
+        String placeName = dataSnapshot.child("placeName").getValue(String.class);
+        String description = dataSnapshot.child("description").getValue(String.class);
+        String imgSrc = dataSnapshot.child("imgSrc").getValue(String.class);
+
+        Place p = new Place(placeID, placeName, description, imgSrc);
+
+        mPlace.add(p);
+
+        for(Station s : stationList)
+            if(s.getStationName().equalsIgnoreCase(stationName))
+                s.addPlace(p);
+    }
+
+    private void loadTimeAndPrice(DataSnapshot dataSnapshot){
+        DataSnapshot tmpDataSnapshot = dataSnapshot.child("priceandtime");
     }
 
     @Override
@@ -136,54 +168,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(this);
-
-
-//        searchView.setOnClickListener(new SearchView.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Log.d("search view : ", "open");
-//            }
-//        });
-//
-//        searchView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Log.d("view : ", "open");
-//            }
-//        });
-//
-//        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-//            @Override
-//            public boolean onClose() {
-//                Log.d("search view : ", "close");
-//                return true;
-//            }
-//        });
-
-
-//        searchItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-//            @Override
-//            public boolean onMenuItemClick(MenuItem menuItem) {
-//                Log.d("menu item : ", "open");
-//                locationItem.setVisible(false);
-//                return true;
-//            }
-//        });
-
-//        MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
-//            @Override
-//            public boolean onMenuItemActionExpand(MenuItem item) {
-//                locationItem.setVisible(false);
-//                return true;
-//            }
-//
-//            @Override
-//            public boolean onMenuItemActionCollapse(MenuItem item) {
-//                locationItem.setVisible(true);
-//                searchItem.setVisible(true);
-//                return true;
-//            }
-//        });
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -204,16 +188,16 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
     public void search(String newText){
-        newText = newText.toLowerCase();
-        ArrayList<Place> newList = new ArrayList<>();
-        for(Place place : mPlace){
-            String placeName = place.getPlaceName().toLowerCase();
-            String stationName = place.getStationName().toLowerCase();
-            if(placeName.contains(newText) || stationName.contains(newText)){
-                newList.add(place);
-            }
-        }
-        recyclerAdapter.setFilter(newList);
-        mPlaceLists.setAdapter(recyclerAdapter);
+//        newText = newText.toLowerCase();
+//        ArrayList<Place> newList = new ArrayList<>();
+//        for(Place place : mPlace){
+//            String placeName = place.getPlaceName().toLowerCase();
+//            String stationName = place.getStationName().toLowerCase();
+//            if(placeName.contains(newText) || stationName.contains(newText)){
+//                newList.add(place);
+//            }
+//        }
+//        recyclerAdapter.setFilter(newList);
+//        mPlaceLists.setAdapter(recyclerAdapter);
     }
 }
